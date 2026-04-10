@@ -1,7 +1,6 @@
 import axios from 'axios';
-import type { Movie } from '../types/movie';
+import type { TmdbResponse } from '../types/movie';
 
-// Отримуємо токен із .env (має починатися з VITE_)
 const ACCESS_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
 
 const movieInstance = axios.create({
@@ -12,18 +11,14 @@ const movieInstance = axios.create({
   },
 });
 
-interface TmdbResponse {
-  results: Movie[];
-}
-
-export const fetchMovies = async (query: string): Promise<Movie[]> => {
+export const fetchMovies = async (query: string, page: number): Promise<TmdbResponse> => {
   const response = await movieInstance.get<TmdbResponse>('/search/movie', {
     params: {
       query,
+      page,
       include_adult: false,
       language: 'en-US',
-      page: 1,
     },
   });
-  return response.data.results;
+  return response.data;
 };

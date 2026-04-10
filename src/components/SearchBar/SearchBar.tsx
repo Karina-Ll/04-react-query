@@ -1,4 +1,5 @@
 // src/components/SearchBar/SearchBar.tsx
+import type { FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import styles from './SearchBar.module.css';
 
@@ -7,11 +8,15 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onSubmit }: SearchBarProps) {
-  const handleAction = (formData: FormData) => {
-    const query = formData.get('query')?.toString().trim();
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    // Отримуємо значення з інпуту за ім'ям 'query'
+    const form = e.currentTarget;
+    const query = (form.elements.namedItem('query') as HTMLInputElement).value.trim();
     
     if (!query) {
-      toast.error('Please enter your search query.');
+      toast.error('Будь ласка, введіть текст для пошуку.');
       return;
     }
     
@@ -21,10 +26,7 @@ export default function SearchBar({ onSubmit }: SearchBarProps) {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <a className={styles.link} href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">
-          Powered by TMDB
-        </a>
-        <form action={handleAction} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form}>
           <input
             className={styles.input}
             type="text"
