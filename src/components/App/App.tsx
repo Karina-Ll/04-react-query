@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
 import SearchBar from '../SearchBar/SearchBar';
@@ -24,11 +24,13 @@ export default function App() {
     placeholderData: keepPreviousData,
   });
 
-  const handleSearch = (newQuery: string) => {
-    if (newQuery.trim() === '') {
-      toast.error('Будь ласка, введіть текст для пошуку!');
-      return;
+  useEffect(() => {
+    if (data && data.results.length === 0) {
+      toast.error(`Нічого не знайдено за запитом "${query}"`);
     }
+  }, [data, query]);
+
+  const handleSearch = (newQuery: string) => {
     setQuery(newQuery);
     setPage(1);
   };
@@ -66,10 +68,6 @@ export default function App() {
                 />
               )}
             </>
-          )}
-
-          {query && data?.results.length === 0 && (
-            <p>Нічого не знайдено за запитом &ldquo;{query}&rdquo;</p>
           )}
         </>
       )}

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { TmdbResponse } from '../types/movie';
+import type { Movie } from '../types/movie';
 
 const ACCESS_TOKEN = import.meta.env.VITE_TMDB_TOKEN;
 
@@ -10,6 +10,11 @@ const movieInstance = axios.create({
     Accept: 'application/json',
   },
 });
+
+interface TmdbResponse {
+  results: Movie[];
+  total_pages: number;
+}
 
 export const fetchMovies = async (query: string, page: number): Promise<TmdbResponse> => {
   const response = await movieInstance.get<TmdbResponse>('/search/movie', {
